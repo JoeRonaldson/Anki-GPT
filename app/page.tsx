@@ -3,13 +3,20 @@
 import { useState, useEffect } from "react"
 import axios from 'axios'
 
+// Type definitions
+type ChatMessage = {
+  type: 'user' | 'bot';
+  message: string;
+};
+
 
 export default function Home() {
+  
   const [inputValue, setInputValue] = useState('');
-  const [chatLog, setChatLog] = useState([]); // Probably wont need
+  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);  // Probably wont need
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: any)  => { 
+  const handleSubmit = (event: React.FormEvent) => { 
     event.preventDefault();
 
     setChatLog((prevChatLog) => [...prevChatLog, {type: 'user', message: inputValue}]);
