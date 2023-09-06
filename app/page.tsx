@@ -22,19 +22,18 @@ export default function Home() {
     event.preventDefault();
 
     setChatLog((prevChatLog) => [...prevChatLog, {type: 'user', message: inputValue}]);
+
     sendMessage(inputValue)
 
     setInputValue('');
   }
 
-  const sendMessage = (user_message: string) => {
-    const instructions: string = "You are an expert Anki Card making computer who mades Anki cards for academic purposes. You always want to understand the 'why'. I want you to create Anki flashcards from a section of text that I will paste at the end of this message. Here are the instructions on what I want you to do: Skim the Text - Before diving into the details, skim through the text to get a general understanding of what it's about. Identify Key Points - Highlight or note the main ideas, terms, or concepts that seem important and capture the essence of the topic. Figure out how many Anki cards you should make. Simplicity is Key - Each card should represent one idea, fact, or concept. For harder questions you can expand on the answer to help understanding. Use Clear Wording - Make sure the wording is clear and straightforward. Context Matters - Sometimes a little context is important. Avoid Yes/No Questions - These usually don't contribute much to understanding or retention. Reply with the Anki cards in JSON format and only use basic cards. Example output: [{'question': 'How do you know that you have reached the end of a Linked List?', 'answer': 'Linked Lists are 'null-terminated' which means the end of the list is denoted by the value 'null'.'}] Here is the text, Only respond in JSON format:"
-    const message = instructions + user_message
-    const url = 'https://api.openai.com/v1/chat/completions';
-    const headers = {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
-    };
+  const sendMessage = (user_text: string) => {
+
+    const instructions = "You are an expert Anki Card making computer who mades Anki cards for academic purposes. You always want to understand the 'why'. I want you to create Anki flashcards from a section of text that I will paste at the end of this message. Here are the instructions on what I want you to do: Skim the Text - Before diving into the details, skim through the text to get a general understanding of what it's about. Identify Key Points - Highlight or note the main ideas, terms, or concepts that seem important and capture the essence of the topic. Figure out how many Anki cards you should make. Simplicity is Key - Each card should represent one idea, fact, or concept. For harder questions you can expand on the answer to help understanding. Use Clear Wording - Make sure the wording is clear and straightforward. Context Matters - Sometimes a little context is important. Avoid Yes/No Questions - These usually don't contribute much to understanding or retention. Reply with the Anki cards in JSON format and only use basic cards. Example output: [{'question': 'How do you know that you have reached the end of a Linked List?', 'answer': 'Linked Lists are 'null-terminated' which means the end of the list is denoted by the value 'null'.'}] Only respond in JSON format, here is the text: "
+    const message = instructions + user_text
+    
+    const url = '/api/chat';
     const data = {
       model: "gpt-4",
       messages: [{"role": "user", "content": message}]
@@ -42,14 +41,14 @@ export default function Home() {
 
     setIsLoading(true);
 
-    // fetches from the OpeanAI API
-    axios.post(url, data, {headers: headers}).then((response) => {
-      const output = JSON.parse(response.data.choices[0].message.content)
-      setChatLog((prevChatLog) => [...prevChatLog, {type: 'bot', message: response.data.choices[0].message.content} ]);
-      setIsLoading(false); 
+    // Posts to next.js api endpoint
+    axios.post(url, data).then((response) => {
+      console.log(response);
+      setChatLog((prevChatLog) => [...prevChatLog, { type: 'bot', message: response.data.choices[0].message.content }])
+      setIsLoading(false);
     }).catch((error) => {
-      setIsLoading(false); 
-      console.log(error)
+      setIsLoading(false);
+      console.log(error);
     })
 
   }
