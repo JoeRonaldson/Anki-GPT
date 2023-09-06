@@ -29,7 +29,7 @@ export default function Home() {
 
   const sendMessage = (user_text: string) => {
     const instructions =
-      "You are an expert Anki Card making computer who mades Anki cards for academic purposes. You always want to understand the 'why'. I want you to create Anki flashcards from a section of text that I will paste at the end of this message. Here are the instructions on what I want you to do: Skim the Text - Before diving into the details, skim through the text to get a general understanding of what it's about. Identify Key Points - Highlight or note the main ideas, terms, or concepts that seem important and capture the essence of the topic. Figure out how many Anki cards you should make. Simplicity is Key - Each card should represent one idea, fact, or concept. For harder questions you can expand on the answer to help understanding. Use Clear Wording - Make sure the wording is clear and straightforward. Context Matters - Sometimes a little context is important. Avoid Yes/No Questions - These usually don't contribute much to understanding or retention. Reply with the Anki cards in JSON format and only use basic cards. Example output: [{'question': 'How do you know that you have reached the end of a Linked List?', 'answer': 'Linked Lists are 'null-terminated' which means the end of the list is denoted by the value 'null'.'}] Only respond in JSON format, here is the text: ";
+      "You are an expert Anki Card making computer who makes Anki cards for academic purposes. You always want to understand the 'why'. Create Anki flashcards from a section of text that I will paste at the end of this message. Here are the instructions on what I want you to do: Skim through the text to get a general understanding of what it's about. Identify the main ideas, terms, or concepts that seem important and capture the essence of the topic. Figure out how many Anki cards you should make. Each card should represent one idea, fact, or concept. For harder questions you can expand on the answer to help understanding. Make sure the wording is clear and straightforward. Context Matters, but never refer to the text as 'text', make sure to desicibe the tezt instead. Avoid Yes/No Questions - These usually don't contribute much to understanding or retention. Reply with the Anki cards in JSON format and only use basic card format. Example output: [{'question': 'How do you know that you have reached the end of a Linked List?', 'answer': 'Linked Lists are 'null-terminated' which means the end of the list is denoted by the value 'null'.'}] Only respond in JSON format, here is the text: ";
     const message = instructions + user_text;
 
     const url = '/api/chat';
@@ -46,15 +46,20 @@ export default function Home() {
       .then((response) => {
         console.log(response);
 
-        // cost of api when using GPT-4
+        // Cost of api when using GPT-4
         const promtTokens = response.data.usage.prompt_tokens * (0.03 / 1000)
         const completionTokens = response.data.usage.completion_tokens * (0.06 / 1000)
         console.log(`Cost of service: $${promtTokens + completionTokens}`)
 
+        const outputArray = JSON.parse(response.data.choices[0].message.content);
         setChatLog((prevChatLog) => [
-          ...prevChatLog,
-          { type: 'bot', message: response.data.choices[0].message.content },
+          ...prevChatLog, 
+          ...outputArray.map((item: {question: string, answer: string}) => ({
+            type: 'bot',
+            message: `Q: ${item.question}, A: ${item.answer}`
+          }))
         ]);
+
         setIsLoading(false);
       })
       .catch((error) => {
@@ -74,14 +79,14 @@ export default function Home() {
             <div className="flex flex-col space-y-4">
               {chatLog.map((message, index) => (
                 <div key={index} className={'flex justify-center'}>
-                  <div className={"bg-gray-800 rounded-lg p-4 text-white max-w-sm mx-auto max-w-[700px]"}>
+                  <div className={"bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]"}>
                     {message.message}
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div key={chatLog.length} className="flex justify-center">
-                  <div className="bg-gray-800 rounded-lg p-4 text-white max-w-sm">
+                  <div className="bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]">
                     <TypingAnimation />
                   </div>
                 </div>
