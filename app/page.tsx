@@ -1,7 +1,9 @@
 'use client'
 
+// Import Dependancies
 import { useState, useEffect } from "react"
 import axios from 'axios'
+import TypingAnimation from "./_components/TypingAnimation";
 
 // Type definitions
 type ChatMessage = {
@@ -9,11 +11,11 @@ type ChatMessage = {
   message: string;
 };
 
-
 export default function Home() {
   
+  // Initialise react components
   const [inputValue, setInputValue] = useState('');
-  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);  // Probably wont need
+  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event: React.FormEvent) => { 
@@ -65,7 +67,14 @@ export default function Home() {
           <div className="text-center text-lg w-96 border-b bg-gray-200 pb-4 pt-6 rounded" key={index}>{message.message} </div>
         ))
       }
-
+      {
+        isLoading && 
+        <div key={chatLog.length} className="flex justify-start">
+          <div className="w-96 border-b bg-gray-200 pb-4 pt-6 rounded">
+            <TypingAnimation />
+          </div>
+        </div>
+      }
       <form onSubmit={handleSubmit} className="mt-8">
         <div className="max-w-5xl w-full lg:flex items-center justify-center">
           <input type="text" name="text-input" id="text-input" placeholder="Enter text here..." 
