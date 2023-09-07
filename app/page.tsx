@@ -6,7 +6,7 @@ import axios from 'axios';
 import TypingAnimation from './_components/TypingAnimation';
 
 // Type definitions
-type ChatMessage = {
+interface ChatMessage {
   type: 'user' | 'bot';
   message: string;
 };
