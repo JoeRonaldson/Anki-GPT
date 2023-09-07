@@ -12,7 +12,7 @@ interface PricingList {
 }
 
 const pricingList: PricingList = {
-  'gpt-4': {
+  'gpt-4-0613': {
     promptCost: 0.03, // per 1000 tokens
     completionCost: 0.06, // per 1000 tokens
   },
