@@ -4,9 +4,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import TypingAnimation from './_components/TypingAnimation';
+import { costCalc } from './_utils/costCalc';
 
 // Type definitions
-interface ChatMessage {
+type ChatMessage = {
   type: 'user' | 'bot';
   message: string;
 };
@@ -47,9 +48,8 @@ export default function Home() {
         console.log(response);
 
         // Cost of api when using GPT-4
-        const promtTokens = response.data.usage.prompt_tokens * (0.03 / 1000)
-        const completionTokens = response.data.usage.completion_tokens * (0.06 / 1000)
-        console.log(`Cost of service: $${promtTokens + completionTokens}`)
+        const cost = costCalc(response.data.usage.prompt_tokens, response.data.usage.completion_tokens, response.data.model)
+        console.log(`Cost of service: $${cost}`)
 
         const outputArray = JSON.parse(response.data.choices[0].message.content);
         setChatLog((prevChatLog) => [
