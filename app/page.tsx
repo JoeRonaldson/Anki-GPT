@@ -4,10 +4,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import TypingAnimation from './_components/TypingAnimation';
+import DownloadCSVButton from './_components/DownloadCSVButton';
 import { costCalc } from './_utils/costCalc';
 import { convertToCsv } from './_utils/convertToCsv';
-
-import DownloadCSVButton from './_components/DownloadCsv'
 
 // Type definitions
 type ChatMessage = {
