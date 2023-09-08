@@ -14,8 +14,12 @@ const DownloadCSVButton: React.FC<DownloadCSVButtonProps> = ({ csvString }) => {
   // Generate a URL for the Blob object
   const url = URL.createObjectURL(blob);
 
+  const today = new Date();
+  const time = today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+  const fileName = `anki-cards-${time}.csv`
+
   return (
-    <a href={url} download="anki-cards.csv" className="btn">
+    <a href={url} download={fileName} className="btn">
       Download Anki Cards
     </a>
   );

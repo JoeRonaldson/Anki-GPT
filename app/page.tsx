@@ -75,10 +75,6 @@ export default function Home() {
       });
   };
 
-  useEffect(() => {
-    console.log('csvString updated:', csvString);
-  }, [csvString]);
-
   return (
     <main className="flex bg-gray-100">
       <div className="container mx-auto max-w-[700px]">
