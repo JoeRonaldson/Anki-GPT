@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.log(error);
-    return new Response('Error', {
+    return new Response('Error when connecting to OpenAI API', {
       status: 500,
     });
   }

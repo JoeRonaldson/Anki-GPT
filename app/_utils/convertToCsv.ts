@@ -1,6 +1,6 @@
 // Function to convert json to csv file
 
-export function convertToCsv(jsonObj: any[]): string {
+export function convertToCsv<T extends Record<string, any>>(jsonObj: T[]): string {
   // Check if there is data
   if (jsonObj.length === 0) {
     return '';
@@ -21,7 +21,7 @@ export function convertToCsv(jsonObj: any[]): string {
         }
         return obj[key].toString();
       })
-      .join(',');
+      .join(';');
 
     lines.push(line);
   });

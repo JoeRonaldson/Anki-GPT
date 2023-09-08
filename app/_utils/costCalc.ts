@@ -18,7 +18,7 @@ const pricingList: PricingList = {
   },
 };
 
-export function costCalc(promtTokens: number, completionTokens: number, modelName: string) {
+export function costCalc(promtTokens: number, completionTokens: number, modelName: string): number {
   // Calculates cost of OpenAi api request depending on number of tokens used
 
   // Make sure modelName exists in pricingList before proceeding
