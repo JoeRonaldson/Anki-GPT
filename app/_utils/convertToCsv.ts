@@ -8,7 +8,6 @@ export function convertToCsv<T extends Record<string, any>>(jsonObj: T[]): strin
 
   // Fetch the keys (column headers)
   const keys = Object.keys(jsonObj[0]);
-
   // Initialise array of lines
   const lines: string[] = [];
 

@@ -1,15 +1,18 @@
 'use client';
 
 // Import Dependancies
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef , useMemo} from 'react';
 import TypingAnimation from './_components/TypingAnimation';
 import DownloadCSVButton from './_components/DownloadCSVButton';
 import { sendMessage } from './_utils/sendMessage';
+import DeleteCard from './_components/DeleteButton';
+import { convertToCsv } from './_utils/convertToCsv';
 
 // Type definitions
 type ChatMessage = {
   type: 'user' | 'bot';
   message: string;
+  msgObject: { question: string, answer: string}
 };
 
 export default function Home() {
@@ -17,14 +20,15 @@ export default function Home() {
   const [inputValue, setInputValue] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [allowDownload, setAllowDownload] = useState(false);
   const [csvString, setCsvString] = useState<string>();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setChatLog((prevChatLog) => [...prevChatLog, { type: 'user', message: inputValue }]);
+    setChatLog((prevChatLog) => [...prevChatLog, { type: 'user', message: inputValue, msgObject: {question: "", answer: ""}}]);
 
-    sendMessage(inputValue, setIsLoading, setChatLog, setCsvString);
+    sendMessage(inputValue, setIsLoading, setChatLog, setCsvString, setAllowDownload);
 
     setInputValue('');
   };
@@ -42,6 +46,24 @@ export default function Home() {
     }
   }, [inputValue]);
 
+  // creates csv file everytime chatLog is updated
+  const botMessages = useMemo(() => {
+    return chatLog
+      .filter((message: ChatMessage) => message.type === 'bot')
+      .map((message: ChatMessage) => message.msgObject);
+  }, [chatLog]);
+
+  useEffect(() => {
+    if (botMessages && botMessages.length > 0) {
+      try {
+        const newCsvString = convertToCsv(botMessages);
+        setCsvString(newCsvString);
+      } catch (error) {
+        console.error('Failed to convert to CSV:', error);
+      }
+    }
+  }, [botMessages]); // Dependency array
+
   return (
     <main className="flex bg-gray-100">
       <div className="container mx-auto max-w-[700px]">
@@ -56,6 +78,9 @@ export default function Home() {
                   <div className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]'}>
                     {message.message}
                   </div>
+                  <div className={'flex h-8'}>
+                    <DeleteCard chatLogIndex={index} setChatLog={setChatLog}/>
+                  </div>
                 </div>
               ))}
               {isLoading && (
@@ -67,7 +92,7 @@ export default function Home() {
               )}
             </div>
           </div>
-          {!csvString && (
+          {!allowDownload && (
             <form onSubmit={handleSubmit} className="flex-none p-6">
               <div className="flex rounded-lg border border-gray-700 bg-blue-950 items-start">
                 <textarea
@@ -88,7 +113,7 @@ export default function Home() {
               </div>
             </form>
           )}
-          {csvString && (
+          {allowDownload && (
             <div className="bg-blue-950 rounded-lg p-4 text-white mx-auto max-w-[700px]">
               <DownloadCSVButton csvString={csvString} />
             </div>
