@@ -1,7 +1,7 @@
 'use client';
 
 // Import Dependancies
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TypingAnimation from './_components/TypingAnimation';
 import DownloadCSVButton from './_components/DownloadCSVButton';
 import { sendMessage } from './_utils/sendMessage';
@@ -28,6 +28,19 @@ export default function Home() {
 
     setInputValue('');
   };
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = 'auto'; // reset the height
+      const scrollHeight = textAreaRef.current.scrollHeight;
+      if (scrollHeight < 200) {
+        textAreaRef.current.style.height = `${scrollHeight}px`; // set it to the scrollHeight
+      } else {
+        textAreaRef.current.style.height = '200px'; // max-height
+      }
+    }
+  }, [inputValue]);
 
   return (
     <main className="flex bg-gray-100">
@@ -56,17 +69,19 @@ export default function Home() {
           </div>
           {!csvString && (
             <form onSubmit={handleSubmit} className="flex-none p-6">
-              <div className="flex rounded-lg border border-gray-700 bg-blue-950">
-                <input
-                  type="text"
-                  className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none"
+              <div className="flex rounded-lg border border-gray-700 bg-blue-950 items-start">
+                <textarea
+                  ref={textAreaRef}
+                  rows={1}
                   placeholder="Paste your text..."
+                  className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  style={{ resize: 'none', maxHeight: '200px', overflowY: 'auto' }}
                 />
                 <button
                   type="submit"
-                  className="bg-blue-950 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none hover:bg-grey transition-colors duration-300"
+                  className="bg-blue-950 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none self-end"
                 >
                   Create
                 </button>

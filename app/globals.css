@@ -17,3 +17,19 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+
+/* For Webkit browsers like Chrome, Safari */
+textarea::-webkit-scrollbar {
+  width: 8px; /* width of the scrollbar */
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #172554; /* color of the tracking area */
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #888; /* color of the scroll thumb */
+  border-radius: 6px; /* make it rounded */
+
+}
