@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface DownloadCSVButtonProps {
+type DownloadCSVButtonProps = {
   csvString: string | undefined;
 }
 

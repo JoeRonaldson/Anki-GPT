@@ -1,15 +1,18 @@
 'use client';
 
 // Import Dependancies
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef , useMemo} from 'react';
 import TypingAnimation from './_components/TypingAnimation';
 import DownloadCSVButton from './_components/DownloadCSVButton';
 import { sendMessage } from './_utils/sendMessage';
+import DeleteCard from './_components/DeleteButton';
+import { convertToCsv } from './_utils/convertToCsv';
 
 // Type definitions
 type ChatMessage = {
   type: 'user' | 'bot';
   message: string;
+  msgObject: { question: string, answer: string}
 };
 
 export default function Home() {
@@ -17,17 +20,49 @@ export default function Home() {
   const [inputValue, setInputValue] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [allowDownload, setAllowDownload] = useState(false);
   const [csvString, setCsvString] = useState<string>();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setChatLog((prevChatLog) => [...prevChatLog, { type: 'user', message: inputValue }]);
+    setChatLog((prevChatLog) => [...prevChatLog, { type: 'user', message: inputValue, msgObject: {question: "", answer: ""}}]);
 
-    sendMessage(inputValue, setIsLoading, setChatLog, setCsvString);
+    sendMessage(inputValue, setIsLoading, setChatLog, setCsvString, setAllowDownload);
 
     setInputValue('');
   };
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = 'auto'; // reset the height
+      const scrollHeight = textAreaRef.current.scrollHeight;
+      if (scrollHeight < 200) {
+        textAreaRef.current.style.height = `${scrollHeight}px`; // set it to the scrollHeight
+      } else {
+        textAreaRef.current.style.height = '200px'; // max-height
+      }
+    }
+  }, [inputValue]);
+
+  // creates csv file everytime chatLog is updated
+  const botMessages = useMemo(() => {
+    return chatLog
+      .filter((message: ChatMessage) => message.type === 'bot')
+      .map((message: ChatMessage) => message.msgObject);
+  }, [chatLog]);
+
+  useEffect(() => {
+    if (botMessages && botMessages.length > 0) {
+      try {
+        const newCsvString = convertToCsv(botMessages);
+        setCsvString(newCsvString);
+      } catch (error) {
+        console.error('Failed to convert to CSV:', error);
+      }
+    }
+  }, [botMessages]); // Dependency array
 
   return (
     <main className="flex bg-gray-100">
@@ -43,6 +78,9 @@ export default function Home() {
                   <div className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]'}>
                     {message.message}
                   </div>
+                  <div className={'flex h-8'}>
+                    <DeleteCard chatLogIndex={index} setChatLog={setChatLog}/>
+                  </div>
                 </div>
               ))}
               {isLoading && (
@@ -54,26 +92,28 @@ export default function Home() {
               )}
             </div>
           </div>
-          {!csvString && (
+          {!allowDownload && (
             <form onSubmit={handleSubmit} className="flex-none p-6">
-              <div className="flex rounded-lg border border-gray-700 bg-blue-950">
-                <input
-                  type="text"
-                  className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none"
+              <div className="flex rounded-lg border border-gray-700 bg-blue-950 items-start">
+                <textarea
+                  ref={textAreaRef}
+                  rows={1}
                   placeholder="Paste your text..."
+                  className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  style={{ resize: 'none', maxHeight: '200px', overflowY: 'auto' }}
                 />
                 <button
                   type="submit"
-                  className="bg-blue-950 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none hover:bg-grey transition-colors duration-300"
+                  className="bg-blue-950 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none self-end"
                 >
                   Create
                 </button>
               </div>
             </form>
           )}
-          {csvString && (
+          {allowDownload && (
             <div className="bg-blue-950 rounded-lg p-4 text-white mx-auto max-w-[700px]">
               <DownloadCSVButton csvString={csvString} />
             </div>
