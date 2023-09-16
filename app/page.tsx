@@ -75,7 +75,7 @@ export default function Home() {
             <div className="flex flex-col space-y-4">
               {chatLog.map((message, index) => (
                 <div key={index} className={'flex justify-center'}>
-                  <div className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]'}>
+                  <div style={{ whiteSpace: "pre-line" }} className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]'}>
                     {message.message}
                   </div>
                   <div className={'flex h-8'}>

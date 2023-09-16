@@ -22,7 +22,7 @@ const DeleteButton: React.FC<Props> = ({ chatLogIndex, setChatLog}) => {
       <button
         type="button"
         onClick={() => deleteSingleCard(chatLogIndex)}
-        className="bg-black text-white rounded-lg px-3 py-1 text-white font-semibold"
+        className="bg-gray-800 text-white rounded-lg px-3 py-1 text-white font-semibold"
       >
         X
       </button>

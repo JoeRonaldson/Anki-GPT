@@ -24,7 +24,7 @@ export const sendMessage = (
 
   setIsLoading(true);
 
-  // Posts to next.js api endpoint
+  // Posts to next.js api endpoint route
   axios
     .post(url, data)
     .then((response) => {
@@ -44,7 +44,7 @@ export const sendMessage = (
         ...prevChatLog,
         ...outputArray.map((item: { question: string; answer: string }) => ({
           type: 'bot',
-          message: `Q: ${item.question}, A: ${item.answer}`,
+          message: `Q: ${item.question}\n A: ${item.answer}`,
           msgObject: { question: item.question, answer: item.answer },
         })),
       ]);
