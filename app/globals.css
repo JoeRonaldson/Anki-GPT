@@ -25,7 +25,7 @@ textarea::-webkit-scrollbar {
 }
 
 textarea::-webkit-scrollbar-track {
-  background: #172554; /* color of the tracking area */
+  background: #1f2937; /* color of the tracking area */
 }
 
 textarea::-webkit-scrollbar-thumb {

@@ -74,11 +74,13 @@ export default function Home() {
           <div className="flex-grow p-6">
             <div className="flex flex-col space-y-4">
               {chatLog.map((message, index) => (
-                <div key={index} className={'flex justify-center'}>
-                  <div style={{ whiteSpace: "pre-line" }} className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]'}>
-                    {message.message}
+                <div key={index} className={'flex justify-center items-center'}>
+                  <div className={'relative'}>
+                    <div style={{ whiteSpace: "pre-line" }} className={'bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px] z-10'}>
+                      {message.message}
+                    </div>
                   </div>
-                  <div className={'flex h-8'}>
+                  <div className={'flex items-center ml-1'}>
                     <DeleteCard chatLogIndex={index} setChatLog={setChatLog}/>
                   </div>
                 </div>
@@ -94,7 +96,7 @@ export default function Home() {
           </div>
           {!allowDownload && (
             <form onSubmit={handleSubmit} className="flex-none p-6">
-              <div className="flex rounded-lg border border-gray-700 bg-blue-950 items-start">
+              <div className="flex rounded-lg border border-gray-700 bg-gray-800 items-start">
                 <textarea
                   ref={textAreaRef}
                   rows={1}
@@ -106,7 +108,7 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="bg-blue-950 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none self-end"
+                  className="bg-gray-800 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none self-end"
                 >
                   Create
                 </button>
@@ -114,7 +116,7 @@ export default function Home() {
             </form>
           )}
           {allowDownload && (
-            <div className="bg-blue-950 rounded-lg p-4 text-white mx-auto max-w-[700px]">
+            <div className="bg-gray-800 rounded-lg p-4 text-white mx-auto max-w-[700px]">
               <DownloadCSVButton csvString={csvString} />
             </div>
           )}
