@@ -24,7 +24,7 @@ const DeleteButton: React.FC<Props> = ({ chatLogIndex, setChatLog}) => {
         onClick={() => deleteSingleCard(chatLogIndex)}
         className="text-white rounded-lg px-3 py-1 text-white font-semibold"
       >
-        <img src="bin-icon.png" alt="Delete Icon" width="30"/>
+        <img src="bin-icon.png" alt="Delete Icon" height="45" width="30"/>
       </button>
     );
   }
