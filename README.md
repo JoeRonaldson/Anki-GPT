@@ -16,7 +16,11 @@ Using this new approach the user can either directly generate Anki Cards from a 
 ## How It Works
 
 This web app is built with Typescript, uses the Next.js framework and hosted on Vercel.
+
 The UI is made up of custom built React components. The inputted text is added to an exiting prompt which is fed to the LLM via an api. This API is a next.js edge function which allows for the longer timeout duration before a response is needed. When querying a LLM the response duration can take up to 30 seconds and would timeout a serverless function.
+
 The response is parsed into JSON format, stored in a stateful array and displayed. The stateful array allows the easy deletion of Questions that the user does not wish to use.
+
 Finally the Anki Card data is converted to a Blob object which enables it to be downloaded by the user as a CSV file.
+
 This CSV file can be easily inputted into the Anki Software.
