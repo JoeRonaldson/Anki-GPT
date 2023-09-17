@@ -3,6 +3,8 @@
 Anki-GPT is a web app that automates the process of creating Anki Cards.
 Simply paste in a body of text from which Anki Cards will be generated from. The advanced LLM creates questions and answers derived from the text and formats them into a downloadable CSV file that can be imported into the Anki App.
 
+The web app can be viewed here: [https://anki-gpt4.vercel.app/](https://anki-gpt4.vercel.app/)
+
 ## What is Anki
 
 Anki is a popular spaced repetition software designed to help people remember things more efficiently. It is often used for studying a wide range of topics, including languages, medical and scientific terminology, history, and more. The software is based on the principle of spaced repetition, where the frequency with which a fact is presented is adjusted based on how easily it was remembered in the past.
